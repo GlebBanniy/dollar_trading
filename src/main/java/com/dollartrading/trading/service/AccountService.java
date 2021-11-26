@@ -2,23 +2,23 @@ package com.dollartrading.trading.service;
 
 import com.dollartrading.trading.dto.AccountDto;
 import com.dollartrading.trading.dto.SuccessfulUpdateDto;
-import com.dollartrading.trading.exceptions.AccountAddingException;
-import com.dollartrading.trading.exceptions.AccountAlreadyExistException;
-import com.dollartrading.trading.exceptions.AccountNotFoundMyException;
-import com.dollartrading.trading.exceptions.AccountUpdatingException;
+import com.dollartrading.trading.exceptions.EntityAddingException;
+import com.dollartrading.trading.exceptions.EntityAlreadyExistException;
+import com.dollartrading.trading.exceptions.EntityNotFoundException;
+import com.dollartrading.trading.exceptions.EntityUpdatingException;
 import com.dollartrading.trading.models.Account;
 import com.dollartrading.trading.repos.AccountRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class AccountService {
     private final AccountRepo accountRepo;
-    private static final String UPDATED_MESSAGE = "successfully updated";
-    private static final String ADDED_EXCEPTION_MESSAGE = "This account is already exist";
-    private static final String NOT_FOUND_MESSAGE = "This account does not exist";
+
     @Autowired
     public AccountService(AccountRepo accountRepo) {
         this.accountRepo = accountRepo;
@@ -32,37 +32,52 @@ public class AccountService {
                 .build();
     }
 
-    public Long addAccount(AccountDto accountDto) throws AccountAddingException, AccountAlreadyExistException {
+    public Long addAccount(AccountDto accountDto) throws EntityAddingException, EntityAlreadyExistException {
         if (accountRepo.findAccountByUsername(accountDto.getUsername()) != null) {
-            throw new AccountAlreadyExistException(ADDED_EXCEPTION_MESSAGE);
+            throw new EntityAlreadyExistException(Messages.ADDED_EXCEPTION_MESSAGE.getMessage());
         }
         try {
             return accountRepo.save(dtoToEntity(accountDto)).getId();
         } catch (Exception e) {
-            throw new AccountAddingException(e);
+            log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
+            throw new EntityAddingException(e);
         }
     }
 
-    public SuccessfulUpdateDto updateAccount(AccountDto accountDto, Long id) throws AccountNotFoundMyException, AccountUpdatingException {
+    public SuccessfulUpdateDto updateAccount(AccountDto accountDto, Long id) throws EntityNotFoundException, EntityUpdatingException {
         Optional<Account> accountFromDb = accountRepo.findById(id);
-        if (accountFromDb.isEmpty()) {
-            throw new AccountNotFoundMyException(NOT_FOUND_MESSAGE);
-        }
-        accountFromDb.get().setPaymentName(accountDto.getPaymentName());
-        accountFromDb.get().setPassword(accountDto.getPassword());
-        accountFromDb.get().setUsername(accountDto.getUsername());
-        try {
-            return SuccessfulUpdateDto.builder()
-                    .id(accountRepo.save(dtoToEntity(accountDto)).getId())
-                    .message(UPDATED_MESSAGE)
-                    .build();
-        } catch (Exception e) {
-            throw new AccountUpdatingException(e);
-        }
+        Account updatingAccount = updateAccount(getOldAccount(accountFromDb), accountDto);
+        return generateUpdatingMessage(updatingAccount);
     }
 
     public void deleteAccount(Long id) {
         accountRepo.deleteById(id);
     }
 
+    private Account getOldAccount(Optional<Account> accountFromDb) throws EntityNotFoundException {
+        if (accountFromDb.isEmpty()) {
+            log.error(Messages.NOT_FOUND_MESSAGE.getMessage());
+            throw new EntityNotFoundException(Messages.NOT_FOUND_MESSAGE.getMessage());
+        }
+        return accountFromDb.get();
+    }
+
+    private Account updateAccount(Account oldAccount, AccountDto accountDto){
+        oldAccount.setPaymentName(accountDto.getPaymentName());
+        oldAccount.setPassword(accountDto.getPassword());
+        oldAccount.setUsername(accountDto.getUsername());
+        return oldAccount;
+    }
+
+    private SuccessfulUpdateDto generateUpdatingMessage(Account updatingAccount) throws EntityUpdatingException {
+        try {
+            return SuccessfulUpdateDto.builder()
+                    .id(accountRepo.save(updatingAccount).getId())
+                    .message(Messages.UPDATED_MESSAGE.getMessage())
+                    .build();
+        } catch (Exception e) {
+            log.error(Messages.ERROR_SAVING_ENTITY.getMessage());
+            throw new EntityUpdatingException(e);
+        }
+    }
 }
