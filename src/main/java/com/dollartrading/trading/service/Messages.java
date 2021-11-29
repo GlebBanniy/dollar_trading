@@ -1,6 +1,7 @@
 package com.dollartrading.trading.service;
 
 public enum Messages {
+    ADDED_MESSAGE("Successfully added"),
     UPDATED_MESSAGE("Successfully updated"),
     ADDED_EXCEPTION_MESSAGE("This entity is already exist"),
     NOT_FOUND_MESSAGE("This entity does not exist"),

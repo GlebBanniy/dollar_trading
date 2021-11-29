@@ -16,7 +16,7 @@ public class AccountDto {
 
     @Size(min=2, max = 10)
     @NotBlank(message = "Необходимо ввести имя")
-    private final String username;
+    private final String userName;
 
     @Size(min=2, max = 10)
     @NotBlank(message = "Необходимо ввести пароль")

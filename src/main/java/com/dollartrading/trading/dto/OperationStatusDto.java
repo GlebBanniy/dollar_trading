@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
-public class SuccessfulUpdateDto {
+public class OperationStatusDto {
     @NotBlank
     private final Long id;
 

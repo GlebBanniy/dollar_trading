@@ -1,7 +1,7 @@
 package com.dollartrading.trading.service;
 
 import com.dollartrading.trading.dto.BidDto;
-import com.dollartrading.trading.dto.SuccessfulUpdateDto;
+import com.dollartrading.trading.dto.OperationStatusDto;
 import com.dollartrading.trading.exceptions.EntityAddingException;
 import com.dollartrading.trading.exceptions.EntityNotFoundException;
 import com.dollartrading.trading.exceptions.EntityUpdatingException;
@@ -36,19 +36,19 @@ public class BidService {
                 .build();
     }
 
-    public Long addBid(BidDto bidDto) throws EntityAddingException {
+    public OperationStatusDto addBid(BidDto bidDto) throws EntityAddingException {
         try {
-            return bidRepo.save(dtoToEntity(bidDto)).getId();
+            return generateUpdatingMessage(bidRepo.save(dtoToEntity(bidDto)), Messages.ADDED_MESSAGE);
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
             throw new EntityAddingException(e);
         }
     }
 
-    public SuccessfulUpdateDto updateBid(BidDto bidDto, Long id) throws EntityNotFoundException, EntityUpdatingException {
+    public OperationStatusDto updateBid(BidDto bidDto, Long id) throws EntityNotFoundException, EntityUpdatingException {
         Optional<Bid> bidFromDb = bidRepo.findById(id);
         Bid updatingBid = updateBid(getOldBid(bidFromDb), bidDto);
-        return generateUpdatingMessage(updatingBid);
+        return generateUpdatingMessage(updatingBid, Messages.UPDATED_MESSAGE);
     }
 
     public void deleteBid (Long id) {
@@ -71,11 +71,11 @@ public class BidService {
         return oldBid;
     }
 
-    private SuccessfulUpdateDto generateUpdatingMessage(Bid updatingBid) throws EntityUpdatingException {
+    private OperationStatusDto generateUpdatingMessage(Bid updatingBid, Messages message) throws EntityUpdatingException {
         try {
-            return SuccessfulUpdateDto.builder()
+            return OperationStatusDto.builder()
                     .id(bidRepo.save(updatingBid).getId())
-                    .message(Messages.UPDATED_MESSAGE.getMessage())
+                    .message(message.getMessage())
                     .build();
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
