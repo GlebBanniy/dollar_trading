@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "url.access.key",
+      "type": "java.lang.String",
+      "description": "Description for url.access.key."
+    },
+    {
+      "name": "url.currencies",
+      "type": "java.lang.String",
+      "description": "Description for url.currencies."
+    },
+    {
+      "name": "url.format",
+      "type": "java.lang.String",
+      "description": "Description for url.format."
+    }
+  ] }

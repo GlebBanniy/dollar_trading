@@ -6,25 +6,41 @@ import com.dollartrading.trading.exceptions.EntityAddingException;
 import com.dollartrading.trading.exceptions.EntityNotFoundException;
 import com.dollartrading.trading.exceptions.EntityUpdatingException;
 import com.dollartrading.trading.models.Bid;
+import com.dollartrading.trading.remote.CurrencyLayerClient;
 import com.dollartrading.trading.repos.AccountRepo;
 import com.dollartrading.trading.repos.BidRepo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Log4j2
 @Service
+@PropertySource("classpath:application.properties")
 public class BidService {
 
     private final BidRepo bidRepo;
     private final AccountRepo accountRepo;
+    private final CurrencyLayerClient currencyLayerClient;
+
+    private final String key;
+    private final String currencies;
+    private final Integer format;
 
     @Autowired
-    public BidService(BidRepo bidRepo, AccountRepo accountRepo) {
+    public BidService(BidRepo bidRepo, AccountRepo accountRepo, CurrencyLayerClient currencyLayerClient,
+                      @Value("${url.access.key}") String key,
+                      @Value("${url.currencies}") String currencies,
+                      @Value("${url.format}") Integer format) {
         this.bidRepo = bidRepo;
         this.accountRepo = accountRepo;
+        this.currencyLayerClient = currencyLayerClient;
+        this.key = key;
+        this.currencies = currencies;
+        this.format = format;
     }
 
     private Bid dtoToEntity(BidDto bidDto) {
@@ -36,7 +52,16 @@ public class BidService {
                 .build();
     }
 
+    private double getActualChange(String key, String currencies, Integer format, String currency){
+        return currencyLayerClient.getData(key, currencies, format).getQuotes().get(currency);
+    }
+
     public OperationStatusDto addBid(BidDto bidDto) throws EntityAddingException {
+        double actualChangeValue = getActualChange(key, currencies, format, bidDto.getCurrency());
+        if (!(actualChangeValue-5 < bidDto.getBidValue() && actualChangeValue+5 > bidDto.getBidValue())){
+            log.error(Messages.INCORRECT_BID_VALUE_MESSAGE.getMessage());
+            throw new EntityAddingException(Messages.INCORRECT_BID_VALUE_MESSAGE.getMessage());
+        }
         try {
             return generateUpdatingMessage(dtoToEntity(bidDto), Messages.ADDED_MESSAGE);
         } catch (Exception e) {

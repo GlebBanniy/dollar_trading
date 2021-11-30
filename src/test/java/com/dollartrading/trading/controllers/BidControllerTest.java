@@ -24,14 +24,14 @@ class BidControllerTest extends BaseControllerTest{
     void setUp() {
         bidDto = new BidDto(
                 TestsVars.NAME_2.getString(),
-                TestsVars.CURRENCY.getString(),
-                TestsVars.BID_VALUE.getValue(),
+                TestsVars.USDRUB.getString(),
+                TestsVars.CORRECT_BID_VALUE.getValue(),
                 true
         );
         badBidDto = new BidDto(
                 TestsVars.NAME.getString(),
-                TestsVars.CURRENCY.getString(),
-                TestsVars.BID_VALUE.getValue(),
+                TestsVars.USDRUB.getString(),
+                TestsVars.CORRECT_BID_VALUE.getValue(),
                 true
         );
     }
