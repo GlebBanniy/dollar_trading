@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/bid")
 public class BidController {
+
     private final BidService bidService;
 
     @Autowired

@@ -41,13 +41,13 @@ public class BidService {
             return generateUpdatingMessage(dtoToEntity(bidDto), Messages.ADDED_MESSAGE);
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
-            throw new EntityAddingException(e);
+            throw new EntityAddingException(Messages.ERROR_SAVING_ENTITY.getMessage());
         }
     }
 
     public OperationStatusDto updateBid(BidDto bidDto, Long id) throws EntityNotFoundException, EntityUpdatingException {
-        Optional<Bid> bidFromDb = bidRepo.findById(id);
-        Bid updatingBid = updateBid(getOldBid(bidFromDb), bidDto);
+        var bidFromDb = bidRepo.findById(id);
+        var updatingBid = updateBid(getOldBid(bidFromDb), bidDto);
         return generateUpdatingMessage(updatingBid, Messages.UPDATED_MESSAGE);
     }
 
@@ -79,7 +79,7 @@ public class BidService {
                     .build();
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
-            throw new EntityUpdatingException(e);
+            throw new EntityUpdatingException(Messages.ERROR_SAVING_ENTITY.getMessage());
         }
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
+
     private final AccountService accountService;
 
     @Autowired
@@ -39,7 +40,7 @@ public class AccountController {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OperationStatusDto> updateAccount(
             @RequestBody AccountDto accountDto,
-            @PathVariable("id") Long accountId) throws EntityUpdatingException, EntityNotFoundException {
+            @PathVariable("id") Long accountId) throws EntityUpdatingException, EntityNotFoundException, EntityAlreadyExistException {
         return new ResponseEntity<>(accountService.updateAccount(accountDto, accountId), HttpStatus.ACCEPTED);
     }
 

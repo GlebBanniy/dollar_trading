@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 public class AccountDto {
+
     @Size(min=2, max = 10)
     @NotBlank(message = "Необходимо указать название банка")
     private final String paymentName;

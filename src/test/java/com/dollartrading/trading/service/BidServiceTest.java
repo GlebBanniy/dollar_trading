@@ -33,8 +33,10 @@ class BidServiceTest {
 
     @Mock
     private BidRepo bidRepo;
+
     @Mock
     private AccountRepo accountRepo;
+
     private AutoCloseable autoCloseable;
     private BidService bidService;
     private Bid bidFromDb;
@@ -73,7 +75,7 @@ class BidServiceTest {
     }
 
     private Bid captureFinalVariable(){
-        ArgumentCaptor<Bid> bidArgumentCaptor = ArgumentCaptor.forClass(Bid.class);
+        var bidArgumentCaptor = ArgumentCaptor.forClass(Bid.class);
         verify(bidRepo).save(bidArgumentCaptor.capture());
         return bidArgumentCaptor.getValue();
     }
@@ -87,33 +89,32 @@ class BidServiceTest {
     void tryAddBid() throws EntityAddingException {
         when(accountRepo.findAccountByUsername(any(String.class))).thenReturn(accountFromDb);
         when(bidRepo.save(any(Bid.class))).thenReturn(bidFromDb);
-        OperationStatusDto result = bidService.addBid(bidDto);
+        var result = bidService.addBid(bidDto);
 
-        Bid value = captureFinalVariable();
+        var value = captureFinalVariable();
         assertThat(value).isEqualTo(bid);
 
-        OperationStatusDto rightValue = OperationStatusDto.builder()
+        var rightValue = OperationStatusDto.builder()
                 .id(TestsVars.ID.getTestId()).message(Messages.ADDED_MESSAGE.getMessage()).build();
         assertThat(result).isEqualTo(rightValue);
     }
 
     @Test
     void willThrowWhenEntityAlreadyExist() {
-        RuntimeException runtimeException = new RuntimeException();
         given(bidRepo.save(bid))
-                .willThrow(runtimeException);
+                .willThrow(RuntimeException.class);
         assertThatThrownBy(() -> bidService.addBid(bidDto))
                 .isInstanceOf(EntityAddingException.class)
-                .hasMessageContaining(String.valueOf(runtimeException));
+                .hasMessageContaining(Messages.ERROR_SAVING_ENTITY.getMessage());
     }
 
     @Test
     void tryUpdateBid() throws EntityUpdatingException, EntityNotFoundException {
         when(bidRepo.save(any(Bid.class))).thenReturn(bidFromDb);
         when(bidRepo.findById(any(Long.class))).thenReturn(Optional.ofNullable(bidFromDb));
-        OperationStatusDto result = bidService.updateBid(bidDto, TestsVars.ID.getTestId());
+        var result = bidService.updateBid(bidDto, TestsVars.ID.getTestId());
 
-        Bid value = captureFinalVariable();
+        var value = captureFinalVariable();
         assertThat(value).isEqualTo(bid);
 
         OperationStatusDto rightValue = OperationStatusDto.builder()

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,10 +26,13 @@ import java.util.Objects;
 @Entity(name = "Account")
 @Table(name = "account")
 public class Account {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String paymentName;
+
+    @Column(nullable = false, length = 10)
     private String username;
     private String password;
 
@@ -39,7 +43,7 @@ public class Account {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
+        var account = (Account) o;
         return paymentName.equals(account.paymentName) && username.equals(account.username) && password.equals(account.password);
     }
 

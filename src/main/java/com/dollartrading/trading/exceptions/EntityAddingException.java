@@ -1,7 +1,7 @@
 package com.dollartrading.trading.exceptions;
 
 public class EntityAddingException extends Exception{
-    public EntityAddingException(Throwable e){
-        super(e);
+    public EntityAddingException(String message){
+        super(message);
     }
 }

@@ -1,8 +1,12 @@
 package com.dollartrading.trading.service;
 
 public enum TestsVars {
+
     ID(1L),
     NAME("Gleb"),
+    NAME_2("Vasia"),
+    NAME_3("Ivan"),
+    TOO_LONG_NAME("VeryLongAndCoolName"),
     BANK_NAME("vtb"),
     CURRENCY("dollar"),
     PASSWORD("123"),

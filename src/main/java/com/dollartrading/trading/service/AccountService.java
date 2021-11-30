@@ -17,6 +17,7 @@ import java.util.Optional;
 @Log4j2
 @Service
 public class AccountService {
+
     private final AccountRepo accountRepo;
 
     @Autowired
@@ -40,13 +41,16 @@ public class AccountService {
             return generateUpdatingMessage(dtoToEntity(accountDto), Messages.ADDED_MESSAGE);
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
-            throw new EntityAddingException(e);
+            throw new EntityAddingException(Messages.ERROR_SAVING_ENTITY.getMessage());
         }
     }
 
-    public OperationStatusDto updateAccount(AccountDto accountDto, Long id) throws EntityNotFoundException, EntityUpdatingException {
-        Optional<Account> accountFromDb = accountRepo.findById(id);
-        Account updatingAccount = updateAccount(getOldAccount(accountFromDb), accountDto);
+    public OperationStatusDto updateAccount(AccountDto accountDto, Long id) throws EntityNotFoundException, EntityUpdatingException, EntityAlreadyExistException {
+        if (accountRepo.findAccountByUsername(accountDto.getUserName()) != null) {
+            throw new EntityAlreadyExistException(Messages.ADDED_EXCEPTION_MESSAGE.getMessage());
+        }
+        var accountFromDb = accountRepo.findById(id);
+        var updatingAccount = updateAccount(getOldAccount(accountFromDb), accountDto);
         return generateUpdatingMessage(updatingAccount, Messages.UPDATED_MESSAGE);
     }
 
@@ -77,7 +81,7 @@ public class AccountService {
                     .build();
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage());
-            throw new EntityUpdatingException(e);
+            throw new EntityUpdatingException(Messages.ERROR_SAVING_ENTITY.getMessage());
         }
     }
 }

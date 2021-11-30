@@ -24,12 +24,13 @@ import java.util.Objects;
 @Entity(name = "Bid")
 @Table(name = "bid")
 public class Bid {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "username", nullable = false)
     private Account account;
     private String currency;
     private Double bidValue;
@@ -39,7 +40,7 @@ public class Bid {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Bid bid = (Bid) o;
+        var bid = (Bid) o;
         return currency.equals(bid.currency) && bidValue.equals(bid.bidValue) && isActive.equals(bid.isActive);
     }
 
