@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface BidRepo extends JpaRepository<Bid, Long> {
     List<Bid> findBidsByCurrency(String currency);
-    List<Bid> findBidsByUser(Account user);
+    List<Bid> findBidsByAccount(Account user);
     List<Bid> findBidsByBidValue(Double value);
 }

@@ -38,7 +38,7 @@ public class BidService {
 
     public OperationStatusDto addBid(BidDto bidDto) throws EntityAddingException {
         try {
-            return generateUpdatingMessage(bidRepo.save(dtoToEntity(bidDto)), Messages.ADDED_MESSAGE);
+            return generateUpdatingMessage(dtoToEntity(bidDto), Messages.ADDED_MESSAGE);
         } catch (Exception e) {
             log.error(Messages.ERROR_SAVING_ENTITY.getMessage(), e);
             throw new EntityAddingException(e);
