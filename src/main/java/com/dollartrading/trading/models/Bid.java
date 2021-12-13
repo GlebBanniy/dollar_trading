@@ -22,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "Bid")
-@Table(name = "bid")
+@Table(name = "bids")
 public class Bid {
 
     @Id

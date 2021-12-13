@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-indexes
+      author: Gleb
+      changes:
+        - createIndex:
+            clustered: true
+            indexName: paymentNameAndUserNameIndex
+            tableName: account
+            columns:
+              - column:
+                  name: payment_name
+              - column:
+                  name: username
+            unique:  true
