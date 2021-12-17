@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-account-table
+      author: Gleb
+      changes:
+        - sql: create table account (
+               id bigint not null auto_increment,
+               password varchar(255),
+               payment_name varchar(255),
+               username varchar(10) not null,
+               primary key (id)
+               )

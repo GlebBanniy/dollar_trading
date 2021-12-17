@@ -42,7 +42,7 @@ class BidControllerTest extends BaseControllerTest{
         mockMvc.perform(post("/bid/create")
                 .content(objectMapper.writeValueAsString(bidDto)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id").value("2"))
                 .andExpect(jsonPath("$.message").value(Messages.ADDED_MESSAGE.getMessage()));
     }
 

@@ -1,3 +1,9 @@
 databaseChangeLog:
   - include:
+      file: db.changelog/changeset/add-account-table.yaml
+  - include:
+      file: db.changelog/changeset/add-bid-table.yaml
+  - include:
+      file: db.changelog/changeset/create-references.yaml
+  - include:
       file: db.changelog/changeset/add-indexes.yaml

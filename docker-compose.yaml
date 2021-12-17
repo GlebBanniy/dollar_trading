@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+
+  docker-mysql:
+    container_name: docker-mysql
+    image: mysql:5.6.47
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dollar_trading
+      MYSQL_USER: gleb
+      MYSQL_PASSWORD: gleb
+    ports:
+      - "3306:3306"
+
+  myapp:
+    container_name: final-app2
+    image: users-mysql-app
+    restart: always
+    links:
+      - "docker-mysql"
+    ports:
+      - "9000:8090"

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-bid-table
+      author: Gleb
+      changes:
+        - sql: create table bid (
+            id bigint not null auto_increment,
+            bid_value double,
+            currency varchar(255),
+            is_active boolean,
+            username bigint not null,
+            primary key (id)
+            )

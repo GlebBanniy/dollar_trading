@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-references
+      author: Gleb
+      changes:
+        - sql: alter table bid
+               add constraint FKgnuqg52ya04wqshpi2c343a4k
+               foreign key (username)
+               references account (id)
