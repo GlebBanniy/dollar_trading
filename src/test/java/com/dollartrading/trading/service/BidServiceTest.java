@@ -8,6 +8,7 @@ import com.dollartrading.trading.exceptions.EntityNotFoundException;
 import com.dollartrading.trading.exceptions.EntityUpdatingException;
 import com.dollartrading.trading.models.Account;
 import com.dollartrading.trading.models.Bid;
+import com.dollartrading.trading.rabbitmq.MessageProducer;
 import com.dollartrading.trading.remote.CurrencyLayerClient;
 import com.dollartrading.trading.repos.AccountRepo;
 import com.dollartrading.trading.repos.BidRepo;
@@ -49,6 +50,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 @PropertySource("classpath:application-test.properties")
 @ExtendWith(MockitoExtension.class)
 class BidServiceTest {
@@ -61,6 +63,9 @@ class BidServiceTest {
 
     @Mock
     private CurrencyLayerClient currencyLayerClient;
+
+    @Mock
+    private MessageProducer messageProducer;
 
     private CurrencyLayerDto currencyLayerDto;
     private CurrencyLayerDto incorrectCurrencyLayerDto;
@@ -81,7 +86,7 @@ class BidServiceTest {
         key = "test";
         currencies = "test";
         format = 1;
-        bidService = new BidService(bidRepo, accountRepo, currencyLayerClient, key, currencies, format);
+        bidService = new BidService(bidRepo, accountRepo, currencyLayerClient, messageProducer, key, currencies, format);
         accountFromDb = Account.builder()
                 .id(ID.getTestId())
                 .password(PASSWORD.getString())

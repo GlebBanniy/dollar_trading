@@ -3,7 +3,6 @@ package com.dollartrading.trading.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 

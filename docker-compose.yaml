@@ -17,9 +17,21 @@ services:
 
   myapp:
     container_name: final-app2
-    image: users-mysql-app
+    image: mysql-app-rabbit
     restart: always
     links:
       - "docker-mysql"
+    environment:
+      spring.rabbitmq.host: rabbitmq-2
     ports:
       - "9000:8090"
+
+  rabbitMQ:
+    container_name: rabbitmq-2
+    image: rabbitmq:3.9-management
+    restart: always
+    links:
+      - "localhost"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
